@@ -80,6 +80,11 @@ public class FinalProjectGUI2 extends javax.swing.JFrame {
         jButton2.setBackground(new java.awt.Color(217, 42, 42));
         jButton2.setForeground(new java.awt.Color(254, 254, 254));
         jButton2.setText("Deletar Ambiente");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jLabel3.setText("Ao criar novos dispositivos, voce deve selecionar previamente o ambiente no seletor abaixo");
 
@@ -215,6 +220,31 @@ public class FinalProjectGUI2 extends javax.swing.JFrame {
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBox1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        int selectedAmbIndex = jComboBox1.getSelectedIndex();
+            if(selectedAmbIndex != -1){
+                String ambId = jComboBox1.getItemAt(selectedAmbIndex);
+                int hasRemoved = tuplaManager.dropAmbiente(ambId);
+                if(hasRemoved == 0){
+                    int totalAmbientes = tuplaManager.getTotalAmbientes();
+                    jComboBox1.removeAllItems();
+                    String existingAmbId;
+                    String searchQuery;
+                    for(int i = 1; i <= totalAmbientes; i++){
+                        searchQuery = "amb" + i;
+                        existingAmbId = tuplaManager.getTuplaAmbiente(searchQuery);
+                        if(existingAmbId != null){
+                            jComboBox1.addItem(existingAmbId);
+                        }
+                    }
+                    System.out.println("Total de ambientes: " + totalAmbientes); 
+                    }
+            } else {
+                JOptionPane.showMessageDialog(null, "Voce deve selecionar o ambiente que deseja excluir");
+            }
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     
     /**

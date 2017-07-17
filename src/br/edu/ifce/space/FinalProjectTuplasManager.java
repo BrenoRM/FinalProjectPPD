@@ -74,7 +74,7 @@ public class FinalProjectTuplasManager {
         template.Id = ambId;
         String takenAmbId;
         try{
-            tuplaAmbiente tuplaValue = (tuplaAmbiente) space.read(template, null, 60*1000);
+            tuplaAmbiente tuplaValue = (tuplaAmbiente) space.readIfExists(template, null, 60*1000);
             if(tuplaValue != null){
                 takenAmbId = tuplaValue.Id;
                 return takenAmbId;
@@ -237,6 +237,34 @@ public class FinalProjectTuplasManager {
             JOptionPane.showMessageDialog(null, "Erro ao criar novo ambiente! \n"
                         + "Tente novamente mais tarde");
             return -6;
+        }
+    }
+    /* DELETAR TUPLAS */
+    public int dropAmbiente(String ambId){
+        try{
+            tuplaDispositivo template = new tuplaDispositivo();
+            template.currentAmbiente = ambId;
+            tuplaDispositivo hasDisp = (tuplaDispositivo) space.read(template, null, 60*1000);
+            if(hasDisp != null){
+               JOptionPane.showMessageDialog(null, "Voce deve transferir todos os dispositivos do ambiente "
+                       + "antes de tentar excluir o mesmo");
+               return -9;
+            } else {
+                tuplaAmbiente templateAmb = new tuplaAmbiente();
+                templateAmb.Id = ambId;
+                tuplaAmbiente removedAmb = (tuplaAmbiente) space.take(templateAmb, null, 60*1000);
+                if(removedAmb == null){
+                    JOptionPane.showMessageDialog(null, "Houve um erro ao tentar remover o ambiente");
+                    return -10;
+                } else {
+                    JOptionPane.showMessageDialog(null, "Ambiente " + removedAmb.Id + " removido com sucesso!");
+                    return 0;
+                }
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Houve um erro ao tentar remover o ambiente");
+            return -9;
         }
     }
 }
