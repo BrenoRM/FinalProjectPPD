@@ -7,6 +7,7 @@ package br.edu.ifce.space;
 import net.jini.space.JavaSpace;
 import br.edu.ifce.space.tuplas.*;
 import javax.swing.JOptionPane;
+import net.jini.core.lease.Lease;
 
 /**
  *
@@ -21,7 +22,7 @@ public class FinalProjectTuplasManager {
         tuplaContadoraAmbiente contadoraAmb = new tuplaContadoraAmbiente();
         contadoraAmb.howMany = 0;
         try{
-             space.write(contadoraAmb, null, 60*1000);
+             space.write(contadoraAmb, null, Lease.FOREVER);
              return true;
          }catch(Exception e){
             e.printStackTrace();
@@ -35,7 +36,7 @@ public class FinalProjectTuplasManager {
         tuplaContadoraDisp contadoraDisp = new tuplaContadoraDisp();
         contadoraDisp.howMany = 0;
         try{
-            space.write(contadoraDisp, null, 60*1000);
+            space.write(contadoraDisp, null, Lease.FOREVER);
             return true;
         }catch(Exception e){
             e.printStackTrace();
@@ -48,7 +49,7 @@ public class FinalProjectTuplasManager {
     public int getTotalAmbientes(){
         try{
             tuplaContadoraAmbiente template = new tuplaContadoraAmbiente();
-            tuplaContadoraAmbiente ambCounter = (tuplaContadoraAmbiente) space.read(template, null, 60*1000);
+            tuplaContadoraAmbiente ambCounter = (tuplaContadoraAmbiente) space.read(template, null, 5000);
             return ambCounter.howMany;
         }catch(Exception e){
             return -4;
@@ -58,7 +59,7 @@ public class FinalProjectTuplasManager {
     public int getTotalDispositivos(){
         try{
             tuplaContadoraDisp template = new tuplaContadoraDisp();
-            tuplaContadoraDisp dispCounter = (tuplaContadoraDisp) space.read(template, null, 60*1000);
+            tuplaContadoraDisp dispCounter = (tuplaContadoraDisp) space.read(template, null, 5000);
             if(dispCounter != null){
                 return dispCounter.howMany;
             } else {
@@ -74,7 +75,7 @@ public class FinalProjectTuplasManager {
         template.Id = ambId;
         String takenAmbId;
         try{
-            tuplaAmbiente tuplaValue = (tuplaAmbiente) space.readIfExists(template, null, 60*1000);
+            tuplaAmbiente tuplaValue = (tuplaAmbiente) space.read(template, null, 5000);
             if(tuplaValue != null){
                 takenAmbId = tuplaValue.Id;
                 return takenAmbId;
@@ -92,7 +93,7 @@ public class FinalProjectTuplasManager {
         tuplaDispositivo template = new tuplaDispositivo();
         template.Id = dispId;
         try{
-            tuplaDispositivo returnedDisp = (tuplaDispositivo) space.read(template, null, 60*1000);
+            tuplaDispositivo returnedDisp = (tuplaDispositivo) space.read(template, null, 5000);
             if(returnedDisp != null){
                 return returnedDisp;
             } else {
@@ -107,7 +108,7 @@ public class FinalProjectTuplasManager {
     public int updateAmbienteCounter(int newValue){
         try{
             tuplaContadoraAmbiente template = new tuplaContadoraAmbiente();
-            tuplaContadoraAmbiente ambCounter = (tuplaContadoraAmbiente) space.take(template, null, 60*1000);
+            tuplaContadoraAmbiente ambCounter = (tuplaContadoraAmbiente) space.take(template, null, 5000);
             if(ambCounter == null){
                 JOptionPane.showMessageDialog(null, "Erro ao encontrar a tupla contadora! \n"
                         + "Tente novamente mais tarde");
@@ -115,7 +116,7 @@ public class FinalProjectTuplasManager {
             }
             ambCounter.howMany = newValue;
             try {
-                space.write(ambCounter, null, 60*1000);
+                space.write(ambCounter, null, Lease.FOREVER);
                 return 0;
             } catch(Exception e){
                 JOptionPane.showMessageDialog(null, "Erro ao atualizar tupla contadora! \n"
@@ -133,11 +134,11 @@ public class FinalProjectTuplasManager {
     public boolean updateDispCounter(int newValue){
         try{
             tuplaContadoraDisp template = new tuplaContadoraDisp();
-            tuplaContadoraDisp dispCounter = (tuplaContadoraDisp) space.take(template, null, 60*1000);
+            tuplaContadoraDisp dispCounter = (tuplaContadoraDisp) space.take(template, null, 5000);
             if(dispCounter != null){
                 dispCounter.howMany = newValue;
                 try{
-                    space.write(dispCounter, null, 60*1000);
+                    space.write(dispCounter, null, Lease.FOREVER);
                     return true;
                 }catch(Exception e){
                     e.printStackTrace();
@@ -166,9 +167,9 @@ public class FinalProjectTuplasManager {
         newAmbCoord.tuplaCoordinatedId = newAmbiente.coordinatorId;
         newAmbCoord.message = newAmbiente.name + " criado. \n";
         try{
-            space.write(newAmbiente, null, 60*1000);
+            space.write(newAmbiente, null, Lease.FOREVER);
             try{
-                space.write(newAmbCoord, null, 60*1000);
+                space.write(newAmbCoord, null, Lease.FOREVER);
                 JOptionPane.showMessageDialog(null, "Ambiente criado com sucesso!");
                 int hasUpdatedCounter = updateAmbienteCounter(newAmbNumber);
                 if(hasUpdatedCounter != 0){
@@ -212,9 +213,9 @@ public class FinalProjectTuplasManager {
         newAmbCoord.tuplaCoordinatedId = "coord" + ambId;
         newAmbCoord.message = newDisp.name + " criado e atrelado ao ambiente. \n";
         try{
-            space.write(newDisp, null, 60*1000);
+            space.write(newDisp, null, Lease.FOREVER);
             try {
-                space.write(newAmbCoord, null, 60*1000);
+                space.write(newAmbCoord, null, Lease.FOREVER);
                 JOptionPane.showMessageDialog(null, "Dispositivo criado com sucesso!");
                 boolean hasUpdatedCounter = updateDispCounter(newDispNum);
                 if(hasUpdatedCounter){
@@ -244,7 +245,7 @@ public class FinalProjectTuplasManager {
         try{
             tuplaDispositivo template = new tuplaDispositivo();
             template.currentAmbiente = ambId;
-            tuplaDispositivo hasDisp = (tuplaDispositivo) space.read(template, null, 60*1000);
+            tuplaDispositivo hasDisp = (tuplaDispositivo) space.read(template, null, 5000);
             if(hasDisp != null){
                JOptionPane.showMessageDialog(null, "Voce deve transferir todos os dispositivos do ambiente "
                        + "antes de tentar excluir o mesmo");
@@ -252,11 +253,12 @@ public class FinalProjectTuplasManager {
             } else {
                 tuplaAmbiente templateAmb = new tuplaAmbiente();
                 templateAmb.Id = ambId;
-                tuplaAmbiente removedAmb = (tuplaAmbiente) space.take(templateAmb, null, 60*1000);
-                if(removedAmb == null){
+                tuplaAmbiente foundAmb = (tuplaAmbiente) space.read(templateAmb, null, 2000);
+                if(foundAmb == null){
                     JOptionPane.showMessageDialog(null, "Houve um erro ao tentar remover o ambiente");
                     return -10;
                 } else {
+                    tuplaAmbiente removedAmb = (tuplaAmbiente) space.take(foundAmb, null, 2000);
                     JOptionPane.showMessageDialog(null, "Ambiente " + removedAmb.Id + " removido com sucesso!");
                     return 0;
                 }
@@ -264,6 +266,42 @@ public class FinalProjectTuplasManager {
         }catch(Exception e){
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, "Houve um erro ao tentar remover o ambiente");
+            return -9;
+        }
+    }
+    
+    public int changeDispAmb(String dispId, String newAmbId){
+        try{
+            tuplaDispositivo templateDisp = new tuplaDispositivo();
+            templateDisp.Id = dispId;
+            tuplaDispositivo returnedDisp = (tuplaDispositivo) space.take(templateDisp, null, 5000);
+            tuplaAmbiente templateAmb = new tuplaAmbiente();
+            templateAmb.Id = newAmbId;
+            if(returnedDisp.currentAmbiente.equals(newAmbId)){
+                JOptionPane.showMessageDialog(null, "O Dispositivo ja esta no ambiente desejado!");
+                space.write(returnedDisp, null, Lease.FOREVER);
+                return -10;
+            } else {
+                tuplaAmbiente returnedAmb = (tuplaAmbiente) space.read(templateAmb, null, 10000);
+                String oldAmbId = returnedDisp.currentAmbiente;
+                tuplaAmbiente templateOldAmb = new tuplaAmbiente();
+                templateOldAmb.Id = oldAmbId;
+                tuplaAmbiente returnedOldAmb = (tuplaAmbiente) space.read(templateOldAmb, null, 5000);
+                String coordOldAmbId = returnedOldAmb.coordinatorId;
+                returnedDisp.currentAmbiente = returnedAmb.Id;
+                space.write(returnedDisp, null, Lease.FOREVER);
+                tuplaHistoricos oldAmbHist = new tuplaHistoricos();
+                oldAmbHist.tuplaCoordinatedId = coordOldAmbId;
+                oldAmbHist.message = "Dispositivo " + returnedDisp.name + " removido do ambiente";
+                space.write(oldAmbHist, null, Lease.FOREVER);
+                tuplaHistoricos newAmbHist = new tuplaHistoricos();
+                newAmbHist.tuplaCoordinatedId = returnedAmb.coordinatorId;
+                newAmbHist.message = "Dispositivo " + returnedDisp.name + " entrou no ambiente";
+                space.write(newAmbHist, null, Lease.FOREVER);
+                return 0;
+            }
+        } catch(Exception e){
+            e.printStackTrace();
             return -9;
         }
     }

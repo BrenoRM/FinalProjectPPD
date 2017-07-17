@@ -10,6 +10,7 @@ import net.jini.space.JavaSpace;
 import br.edu.ifce.space.tuplas.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -53,8 +54,18 @@ public class FinalProjectGUI2 extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jRadioButton1.setText("Ambiente");
+        jRadioButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioButton1ActionPerformed(evt);
+            }
+        });
 
         jRadioButton2.setText("Dispositivo");
+        jRadioButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioButton2ActionPerformed(evt);
+            }
+        });
 
         jButton1.setText("Criar!");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -76,6 +87,11 @@ public class FinalProjectGUI2 extends javax.swing.JFrame {
         jButton4.setText("Visualizar Historico");
 
         jButton3.setText("Alternar Dispositivo");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         jButton2.setBackground(new java.awt.Color(217, 42, 42));
         jButton2.setForeground(new java.awt.Color(254, 254, 254));
@@ -245,6 +261,47 @@ public class FinalProjectGUI2 extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, "Voce deve selecionar o ambiente que deseja excluir");
             }
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton1ActionPerformed
+        // TODO add your handling code here:
+        jRadioButton2.setSelected(false);
+    }//GEN-LAST:event_jRadioButton1ActionPerformed
+
+    private void jRadioButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton2ActionPerformed
+        // TODO add your handling code here:
+        jRadioButton1.setSelected(false);
+    }//GEN-LAST:event_jRadioButton2ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        int selectedAmbIndex = jComboBox1.getSelectedIndex();
+        int selectedDispIndex = jComboBox2.getSelectedIndex();
+        if(selectedAmbIndex != -1 && selectedDispIndex != -1){
+            String ambId = jComboBox1.getItemAt(selectedAmbIndex);
+            String dispId = jComboBox2.getItemAt(selectedDispIndex);
+            String[] partialDispString = dispId.split(Pattern.quote("."));
+            dispId = partialDispString[0];
+            System.out.println(dispId);
+            int returnedValue = tuplaManager.changeDispAmb(dispId, ambId);
+            if(returnedValue == 0){
+                int dispNum = tuplaManager.getTotalDispositivos();
+                jComboBox2.removeAllItems();
+                tuplaDispositivo existingDisp;
+                String searchQuery;
+                for(int i = 1; i <= dispNum; i++){
+                    searchQuery = "disp" + i;
+                    existingDisp = tuplaManager.getDisp(searchQuery);
+                    if(existingDisp != null){
+                        String dispString = existingDisp.Id + ". Ambiente Relacionado: " + existingDisp.currentAmbiente;
+                        jComboBox2.addItem(dispString);
+                    }
+                }
+                JOptionPane.showMessageDialog(null, "Ambiente do Dispositivo alterado com sucesso!");
+            }
+        } else {
+           JOptionPane.showMessageDialog(null, "Voce deve selecionar o ambiente e o dispositivo que deseja alternar"); 
+        }
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     
     /**
