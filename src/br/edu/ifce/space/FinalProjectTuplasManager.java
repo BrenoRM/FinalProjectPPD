@@ -49,7 +49,7 @@ public class FinalProjectTuplasManager {
     public int getTotalAmbientes(){
         try{
             tuplaContadoraAmbiente template = new tuplaContadoraAmbiente();
-            tuplaContadoraAmbiente ambCounter = (tuplaContadoraAmbiente) space.read(template, null, 5000);
+            tuplaContadoraAmbiente ambCounter = (tuplaContadoraAmbiente) space.read(template, null, 1000);
             return ambCounter.howMany;
         }catch(Exception e){
             return -4;
@@ -274,7 +274,7 @@ public class FinalProjectTuplasManager {
         try{
             tuplaDispositivo templateDisp = new tuplaDispositivo();
             templateDisp.Id = dispId;
-            tuplaDispositivo returnedDisp = (tuplaDispositivo) space.take(templateDisp, null, 5000);
+            tuplaDispositivo returnedDisp = (tuplaDispositivo) space.take(templateDisp, null, 1000);
             tuplaAmbiente templateAmb = new tuplaAmbiente();
             templateAmb.Id = newAmbId;
             if(returnedDisp.currentAmbiente.equals(newAmbId)){
