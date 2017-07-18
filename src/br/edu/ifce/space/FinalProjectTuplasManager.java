@@ -245,7 +245,7 @@ public class FinalProjectTuplasManager {
         try{
             tuplaDispositivo template = new tuplaDispositivo();
             template.currentAmbiente = ambId;
-            tuplaDispositivo hasDisp = (tuplaDispositivo) space.read(template, null, 5000);
+            tuplaDispositivo hasDisp = (tuplaDispositivo) space.read(template, null, 2000);
             if(hasDisp != null){
                JOptionPane.showMessageDialog(null, "Voce deve transferir todos os dispositivos do ambiente "
                        + "antes de tentar excluir o mesmo");
