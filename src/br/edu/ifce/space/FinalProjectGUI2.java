@@ -6,7 +6,8 @@
 package br.edu.ifce.space;
 
 import javax.swing.JOptionPane;
-import net.jini.space.JavaSpace;
+import net.jini.space.*;
+import net.jini.core.entry.*;
 import br.edu.ifce.space.tuplas.*;
 import java.util.ArrayList;
 import java.util.List;

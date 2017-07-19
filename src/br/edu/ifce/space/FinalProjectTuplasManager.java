@@ -4,7 +4,8 @@
  * and open the template in the editor.
  */
 package br.edu.ifce.space;
-import net.jini.space.JavaSpace;
+import net.jini.core.entry.*;
+import net.jini.space.*;
 import br.edu.ifce.space.tuplas.*;
 import java.util.ArrayList;
 import java.util.List;
