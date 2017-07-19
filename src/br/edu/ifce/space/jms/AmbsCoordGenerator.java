@@ -8,6 +8,7 @@ import java.io.*;
 import java.util.*;
 import javax.jms.*;
 import javax.naming.*;
+import org.exolab.jms.administration.JmsAdminServerIfc;
 
 /**
  *
@@ -15,28 +16,32 @@ import javax.naming.*;
  */
 public class AmbsCoordGenerator {
     
-    public boolean putNewMessage(Context context, QueueSession qsession, String coordId, 
-            String coordMessage, int queueCounter, Hashtable properties){
-        
+    public boolean putNewMessage(JmsAdminServerIfc admin, QueueSession qsession, Context context,
+            String coordId, String coordMessage){
         try{
-            TextMessage message = qsession.createTextMessage();
-            message.setText(coordMessage);
             
+            String queue = coordId;
+            Boolean isQueue = Boolean.TRUE;
             
-            javax.jms.Queue dest = (javax.jms.Queue) context.lookup("queue" + queueCounter);
-            context.rename("queue" + queueCounter, coordId);
+            if(!admin.addDestination(queue, isQueue)){
+                return false;
+            } else {
+                TextMessage message = qsession.createTextMessage();
+		message.setText(coordMessage);
+                javax.jms.Queue dest = (javax.jms.Queue) context.lookup(coordId);
 		QueueSender sender = qsession.createSender(dest);
 		sender.send(message);
-     
-            context.close();
-            return true;
+                return true;
+            }
+            
         } catch(Exception e){
             e.printStackTrace();
             return false;
         }
     }
     
-    public void getMessages(Context context, QueueSession qsession, String coordId, Hashtable properties){
+    public void getMessages(QueueSession qsession, Context context,
+            String coordId){
         try{
             
             javax.jms.Queue dest = (javax.jms.Queue)context.lookup(coordId);
