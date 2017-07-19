@@ -6,6 +6,8 @@
 package br.edu.ifce.space;
 import net.jini.space.JavaSpace;
 import br.edu.ifce.space.tuplas.*;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JOptionPane;
 import net.jini.core.lease.Lease;
 
@@ -21,8 +23,10 @@ public class FinalProjectTuplasManager {
     public boolean createAmbienteCounter(){
         tuplaContadoraAmbiente contadoraAmb = new tuplaContadoraAmbiente();
         contadoraAmb.howMany = 0;
+        tuplaExclusions excludedAmbs = new tuplaExclusions();
         try{
              space.write(contadoraAmb, null, Lease.FOREVER);
+             space.write(excludedAmbs, null, Lease.FOREVER);
              return true;
          }catch(Exception e){
             e.printStackTrace();
@@ -96,6 +100,21 @@ public class FinalProjectTuplasManager {
             tuplaDispositivo returnedDisp = (tuplaDispositivo) space.read(template, null, 5000);
             if(returnedDisp != null){
                 return returnedDisp;
+            } else {
+                return null;
+            }
+        } catch(Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
+    public List<String> getRemovedAmbs(){
+        try{
+            tuplaExclusions template = new tuplaExclusions();
+            tuplaExclusions removedAmbs = (tuplaExclusions) space.read(template, null, 2000);
+            if(removedAmbs != null){
+                return removedAmbs.excludedAmbs;
             } else {
                 return null;
             }
@@ -259,6 +278,15 @@ public class FinalProjectTuplasManager {
                     return -10;
                 } else {
                     tuplaAmbiente removedAmb = (tuplaAmbiente) space.take(foundAmb, null, 2000);
+                    tuplaExclusions templateExc = new tuplaExclusions();
+                    tuplaExclusions excludedAmbs = (tuplaExclusions) space.take(templateExc, null, 2000);
+                    if(excludedAmbs.excludedAmbs == null){
+                        excludedAmbs.excludedAmbs = new ArrayList<String>();
+                        excludedAmbs.excludedAmbs.add(removedAmb.Id);
+                    } else {
+                        excludedAmbs.excludedAmbs.add(removedAmb.Id);
+                    }
+                    space.write(excludedAmbs, null, Lease.FOREVER);
                     JOptionPane.showMessageDialog(null, "Ambiente " + removedAmb.Id + " removido com sucesso!");
                     return 0;
                 }

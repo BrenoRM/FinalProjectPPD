@@ -188,12 +188,19 @@ public class FinalProjectGUI2 extends javax.swing.JFrame {
                 jComboBox1.removeAllItems();
                 String existingAmbId;
                 String searchQuery;
+                List<String> removedAmbs = tuplaManager.getRemovedAmbs();
                 for(int i = 1; i <= totalAmbientes; i++){
                     searchQuery = "amb" + i;
-                    existingAmbId = tuplaManager.getTuplaAmbiente(searchQuery);
-                    if(existingAmbId != null){
-                        jComboBox1.addItem(existingAmbId);
+                    if(removedAmbs != null){
+                        if(removedAmbs.contains(searchQuery) == false){
+                            existingAmbId = tuplaManager.getTuplaAmbiente(searchQuery);
+                            jComboBox1.addItem(existingAmbId);
+                        }                        
+                    } else {
+                            existingAmbId = tuplaManager.getTuplaAmbiente(searchQuery);
+                            jComboBox1.addItem(existingAmbId);       
                     }
+
                 }
                 System.out.println("Total de ambientes: " + totalAmbientes);
             }
@@ -248,12 +255,19 @@ public class FinalProjectGUI2 extends javax.swing.JFrame {
                     jComboBox1.removeAllItems();
                     String existingAmbId;
                     String searchQuery;
+                    List<String> removedAmbs = tuplaManager.getRemovedAmbs();
                     for(int i = 1; i <= totalAmbientes; i++){
                         searchQuery = "amb" + i;
-                        existingAmbId = tuplaManager.getTuplaAmbiente(searchQuery);
-                        if(existingAmbId != null){
-                            jComboBox1.addItem(existingAmbId);
+                        if(removedAmbs != null){
+                            if(removedAmbs.contains(searchQuery) == false){
+                                existingAmbId = tuplaManager.getTuplaAmbiente(searchQuery);
+                                jComboBox1.addItem(existingAmbId);
+                            }                        
+                        } else {
+                                existingAmbId = tuplaManager.getTuplaAmbiente(searchQuery);
+                                jComboBox1.addItem(existingAmbId);       
                         }
+
                     }
                     System.out.println("Total de ambientes: " + totalAmbientes); 
                     }
